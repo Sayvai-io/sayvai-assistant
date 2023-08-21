@@ -12,25 +12,20 @@
 import os
 import pinecone
 from dbbase import SQLDatabase
-from dbchain import SQLDatabaseChain
-from langchain.chains import question_answering 
+from vectorstore import vectordb
+from dbchain import SQLDatabaseChain 
 from langchain.llms import OpenAI 
 from langchain.chat_models import ChatOpenAI
 from langchain.tools import HumanInputRun as human
 from langchain.agents import AgentType, Tool, AgentExecutor , initialize_agent , OpenAIFunctionsAgent
 from langchain.schema.messages import SystemMessage
 from sqlalchemy import create_engine
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import Pinecone
 from langchain.prompts.prompt import PromptTemplate
 
 
 
 with open("openai_api_key.txt", "r") as f:
     api_key = f.read()
-
-with open("pinecone_api.txt", "r") as f:
-    pinecone_api_key = f.read()
     
 
 os.environ["OPENAI_API_KEY"] = api_key
@@ -50,17 +45,7 @@ class Assistant:
         self.human = None
         self.sql = None
         self.calendly = None
-        self.vectors = None
-        self.index = "index-1"
     
-    
-    def initialize_vectordb(self) -> None:
-        """Initialize the vector database"""
-        self.vectors = pinecone.init(
-            api_key=pinecone_api_key,
-            environment="northamerica-northeast1-gcp"
-        )
-        return None
     
     def initialize_human(self) -> None:
         """Initialize the human"""
@@ -88,12 +73,12 @@ class Assistant:
                 Tool(
                     name="sql",
                     func=self.sql_chain,
-                    description="The sql tool is used to interact with the sql database."
+                    description="useful to fetch database (takes natural language input)."
                 ),
                 Tool(
                     name="pinecone",
-                    func=self.vectors,
-                    description="The pinecone tool is used to interact with the vector database."
+                    func=vectordb,
+                    description="useful when you need something about sayvai"
                 ),
             ]
         else :
@@ -107,31 +92,30 @@ class Assistant:
             db=db,
         )
         return sql_db_chain.run()
-    
-    def get_similar(self, query):
-        """Get similar query from the vector database"""
-        # get existing index
-        search = Pinecone.from_existing_index(
-            index_name=self.index,
-            embedding=OpenAIEmbeddings(),
-            namespace="Proposal-investors"
-        )
-        similar_docs = search.as_retriever(search_type="mmr").get_relevant_documents(query=query)
-        # write a Q and A chain to get the answer
-        qachain = question_answering.load_qa_chain(
-            llm=llm,
-            chain_type="stuff",
             
+    def initialize_agent(self, verbose: bool = False) -> None:
+        self.agent = initialize_agent(
+            agent_type=AgentType.OPENAI_FUNCTIONS,
+            llm=llm,
+            tools=self.tools,
+            verbose=verbose,
         )
-        return qachain.run(input_documents=similar_docs, question=query)
-        
      
-    def initialize(self):
+    def initialize(self) -> None:
         """Initialize the assistant"""
-        self.initialize_vectordb()
+        # self.initialize_vectordb()
         self.initialize_human()
         self.initialize_sql()
         self.intialize_tools()
+        self.initialize_agent(verbose=True)
+        return None
+    
+    def get_answer(self, question: str) -> str:
+        """Get the answer from the agent"""
+        return self.agent.run(question)
+    
+        
+    
         
     
         
