@@ -45,6 +45,10 @@ class Assistant:
         self.human = None
         self.sql = None
         self.calendly = None
+        self.system_message = SystemMessage(content="You are assistant that works for sayvai.Interacrt with user untill he opt to exit")
+        self.prompt = OpenAIFunctionsAgent.create_prompt(
+            system_message=self.system_message,
+        )
     
     
     def initialize_human(self) -> None:
@@ -94,12 +98,26 @@ class Assistant:
         return sql_db_chain.run()
             
     def initialize_agent(self, verbose: bool = False) -> None:
-        self.agent = initialize_agent(
-            agent_type=AgentType.OPENAI_FUNCTIONS,
+        """Initialize the agent"""
+        # self.agent = initialize_agent(
+        #     agent_type=AgentType.OPENAI_FUNCTIONS,
+        #     llm=llm,
+        #     tools=self.tools,
+        #     verbose=verbose,
+        # )
+        self.agent = OpenAIFunctionsAgent(
             llm=llm,
+            tools=self.tools,
+            prompt=self.prompt,
+        )
+        agent_executor =AgentExecutor(
+            agent=self.agent,
             tools=self.tools,
             verbose=verbose,
         )
+        return agent_executor
+        
+        
      
     def initialize(self) -> None:
         """Initialize the assistant"""
@@ -112,7 +130,8 @@ class Assistant:
     
     def get_answer(self, question: str) -> str:
         """Get the answer from the agent"""
-        return self.agent.run(question)
+        agent_executor = self.initialize_agent()
+        return agent_executor.run(question)
     
         
     
