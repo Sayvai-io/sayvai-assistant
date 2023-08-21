@@ -116,15 +116,14 @@ class Assistant:
             embedding=OpenAIEmbeddings(),
             namespace="Proposal-investors"
         )
-        similar_docs = search.similarity_search_with_score(query, k=2)
+        similar_docs = search.as_retriever(search_type="mmr").get_relevant_documents(query=query)
         # write a Q and A chain to get the answer
         qachain = question_answering.load_qa_chain(
             llm=llm,
             chain_type="stuff",
             
         )
-        print(similar_docs[0][0].page_content)
-        return qachain.run(input_documents=similar_docs[0][0], question=query)
+        return qachain.run(input_documents=similar_docs, question=query)
         
      
     def initialize(self):
