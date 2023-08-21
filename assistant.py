@@ -64,6 +64,17 @@ class Assistant:
             future=True,
         )
         return None
+    
+    
+    def sql_chain(self):
+        """Initialize the sql database chain"""
+        db = SQLDatabase(engine = self.sql)
+        sql_db_chain = SQLDatabaseChain.from_llm(
+        llm=llm,
+        db=db,
+        )
+        return sql_db_chain
+        
         
     def intialize_tools(self):
         """Initialize the tools"""
@@ -76,7 +87,7 @@ class Assistant:
                 ),
                 Tool(
                     name="sql",
-                    func=self.sql_chain,
+                    func=self.sql_chain.run,
                     description="useful to fetch database (takes natural language input)."
                 ),
                 Tool(
@@ -88,14 +99,7 @@ class Assistant:
         else :
             print("Tools already initialized")
             
-    def sql_chain(self):
-        """Initialize the sql database chain"""
-        db = SQLDatabase(engine = self.sql)
-        sql_db_chain = SQLDatabaseChain.from_llm(
-            llm=llm,
-            db=db,
-        )
-        return sql_db_chain.run()
+
             
     def initialize_agent(self, verbose: bool = False) -> None:
         """Initialize the agent"""
