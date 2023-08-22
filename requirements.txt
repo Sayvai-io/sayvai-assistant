@@ -6,4 +6,4 @@ tiktoken
 unstructured
 sqlalchemy
 fastapi
-pysqlite3
+pysqlite3-wheels
