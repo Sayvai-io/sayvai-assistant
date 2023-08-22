@@ -1,9 +1,8 @@
 import os
 
-from dbbase import SQLDatabase
-from dbchain import SQLDatabaseChain
+from tools.dbbase import SQLDatabase
+from tools.dbchain import SQLDatabaseChain
 from langchain.chat_models import ChatOpenAI
-from sqlalchemy import create_engine
 
 with open("D:\kedar\SayvAI\sayvai-assistant\openai_api_key.txt", "r") as f:
     api_key = f.read()

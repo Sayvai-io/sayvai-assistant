@@ -14,9 +14,10 @@ import os
 from langchain.agents import AgentExecutor, OpenAIFunctionsAgent, Tool
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationSummaryMemory
+from langchain.schema.messages import SystemMessage
 from langchain.tools import HumanInputRun as human
 
-from tools.constants import agent_prompt
+# from tools.constants import agent_prompt
 from tools.database import DatabaseChain
 from tools.vectorstore import vectordb
 
@@ -37,7 +38,7 @@ class Assistant:
         self.agent = None
         self.tools = None
         self.calendly = None
-        self.memory = ConversationSummaryMemory(llm)
+        self.memory = ConversationSummaryMemory(llm=llm, memory_key='history')
         
     def intialize_tools(self):
         """Initialize the tools"""
@@ -67,12 +68,13 @@ class Assistant:
         self.agent = OpenAIFunctionsAgent(
             llm=llm,
             tools=self.tools,
-            prompt=agent_prompt,
+            prompt=SystemMessage(content="You are assistant that works for sayvai.Interacrt with user untill he opt to exit")
         )
         agent_executor =AgentExecutor(
             agent=self.agent,
             tools=self.tools,
             verbose=verbose,
+            memory=self.memory
         )
         return agent_executor
             
@@ -86,12 +88,3 @@ class Assistant:
         """Get the answer from the agent"""
         agent_executor = self.initialize_agent()
         return agent_executor.run(question)
-    
-        
-    
-        
-    
-        
-        
-
-        
