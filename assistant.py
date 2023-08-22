@@ -10,24 +10,19 @@
  3.1) summarization
 """
 import os
-import pinecone
-from dbbase import SQLDatabase
-from vectorstore import vectordb
-from dbchain import SQLDatabaseChain 
-from langchain.llms import OpenAI 
+
+from langchain.agents import AgentExecutor, OpenAIFunctionsAgent, Tool
 from langchain.chat_models import ChatOpenAI
+from langchain.memory import ConversationSummaryMemory
 from langchain.tools import HumanInputRun as human
-from langchain.agents import AgentType, Tool, AgentExecutor , initialize_agent , OpenAIFunctionsAgent
-from langchain.schema.messages import SystemMessage
-from sqlalchemy import create_engine
-from langchain.prompts.prompt import PromptTemplate
 
-
+from tools.constants import agent_prompt
+from tools.database import DatabaseChain
+from tools.vectorstore import vectordb
 
 with open("openai_api_key.txt", "r") as f:
     api_key = f.read()
     
-
 os.environ["OPENAI_API_KEY"] = api_key
 
 llm = ChatOpenAI(
@@ -40,41 +35,9 @@ class Assistant:
     It is the main interface for the user to interact with the agent."""
     def __init__(self):
         self.agent = None
-        self.memory = None
         self.tools = None
-        self.human = None
-        self.sql = None
         self.calendly = None
-        self.system_message = SystemMessage(content="You are assistant that works for sayvai.Interacrt with user untill he opt to exit")
-        self.prompt = OpenAIFunctionsAgent.create_prompt(
-            system_message=self.system_message,
-        )
-    
-    
-    def initialize_human(self) -> None:
-        """Initialize the human"""
-        self.human = human()
-        return None
-    
-    def initialize_sql(self) -> None:
-        """Initialize the sql database"""
-        self.sql = create_engine(
-            "sqlite:///sayvai.db",
-            echo=True,
-            future=True,
-        )
-        return None
-    
-    
-    def sql_chain(self):
-        """Initialize the sql database chain"""
-        db = SQLDatabase(engine = self.sql)
-        sql_db_chain = SQLDatabaseChain.from_llm(
-        llm=llm,
-        db=db,
-        )
-        return sql_db_chain
-        
+        self.memory = ConversationSummaryMemory(llm)
         
     def intialize_tools(self):
         """Initialize the tools"""
@@ -82,12 +45,12 @@ class Assistant:
             self.tools = [
                 Tool(
                     name="human",
-                    func=self.human,
+                    func=human,
                     description="The human tool is used to interact with the user."
                 ),
                 Tool(
                     name="sql",
-                    func=self.sql_chain.run,
+                    func=DatabaseChain,
                     description="useful to fetch database (takes natural language input)."
                 ),
                 Tool(
@@ -98,21 +61,13 @@ class Assistant:
             ]
         else :
             print("Tools already initialized")
-            
-
-            
+             
     def initialize_agent(self, verbose: bool = False) -> None:
         """Initialize the agent"""
-        # self.agent = initialize_agent(
-        #     agent_type=AgentType.OPENAI_FUNCTIONS,
-        #     llm=llm,
-        #     tools=self.tools,
-        #     verbose=verbose,
-        # )
         self.agent = OpenAIFunctionsAgent(
             llm=llm,
             tools=self.tools,
-            prompt=self.prompt,
+            prompt=agent_prompt,
         )
         agent_executor =AgentExecutor(
             agent=self.agent,
@@ -120,14 +75,9 @@ class Assistant:
             verbose=verbose,
         )
         return agent_executor
-        
-        
-     
+            
     def initialize(self) -> None:
         """Initialize the assistant"""
-        # self.initialize_vectordb()
-        self.initialize_human()
-        self.initialize_sql()
         self.intialize_tools()
         self.initialize_agent(verbose=True)
         return None

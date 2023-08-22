@@ -1,11 +1,11 @@
 # vector store pinecone
 import os
-import pinecone
-from langchain.vectorstores import Pinecone
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.llms import OpenAI 
-from langchain.chains import question_answering
 
+import pinecone
+from langchain.chains import question_answering
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.llms import OpenAI
+from langchain.vectorstores import Pinecone
 
 with open("openai_api_key.txt", "r") as f:
     api_key = f.read()

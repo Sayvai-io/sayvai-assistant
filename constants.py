@@ -1,3 +1,0 @@
-# constants file
-
-prompt = None
