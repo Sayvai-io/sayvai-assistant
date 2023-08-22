@@ -56,25 +56,15 @@ class Assistant:
         self.human = human()
         return None
     
-    def initialize_sql(self) -> None:
-        """Initialize the sql database"""
-        self.sql = create_engine(
-            "sqlite:///sayvai.db",
-            echo=True,
-            future=True,
-        )
-        return None
     
-    
-    def sql_chain(self):
+    def sql_chain(self, query: str = None) -> str:
         """Initialize the sql database chain"""
-        db = SQLDatabase(engine = self.sql)
+        db = SQLDatabase.from_uri("sqlite:///sayvai.db")
         sql_db_chain = SQLDatabaseChain.from_llm(
         llm=llm,
         db=db,
         )
-        return sql_db_chain
-        
+        return sql_db_chain.run(query)
         
     def intialize_tools(self):
         """Initialize the tools"""
@@ -87,7 +77,7 @@ class Assistant:
                 ),
                 Tool(
                     name="sql",
-                    func=self.sql_chain.run,
+                    func=self.sql_chain,
                     description="useful to fetch database (takes natural language input)."
                 ),
                 Tool(
@@ -127,15 +117,13 @@ class Assistant:
         """Initialize the assistant"""
         # self.initialize_vectordb()
         self.initialize_human()
-        self.initialize_sql()
         self.intialize_tools()
-        self.initialize_agent(verbose=True)
+        self.agent_executor = self.initialize_agent(verbose=True)
         return None
     
     def get_answer(self, question: str) -> str:
         """Get the answer from the agent"""
-        agent_executor = self.initialize_agent()
-        return agent_executor.run(question)
+        return self.agent_executor.run(question)
     
     
         
