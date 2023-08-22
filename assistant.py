@@ -137,11 +137,5 @@ class Assistant:
         agent_executor = self.initialize_agent()
         return agent_executor.run(question)
     
-        
     
-        
-    
-        
-        
-
         
