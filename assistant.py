@@ -62,7 +62,6 @@ class Assistant:
                     description="useful when you need something about sayvai"
                 ),
             ]
-            print("Tools initialized succesfully")
         else :
             print("Tools already initialized")
              
@@ -80,7 +79,6 @@ class Assistant:
             verbose=verbose,
             memory=self.memory
         )
-        print('Agent initialized')
         return agent_executor
             
     def initialize(self) -> None:
