@@ -13,7 +13,6 @@ from langchain.schema import BasePromptTemplate
 from langchain.schema.language_model import BaseLanguageModel
 from langchain.tools.sql_database.prompt import QUERY_CHECKER
 from dbbase import SQLDatabase
-
 from langchain_experimental.pydantic_v1 import Extra, Field, root_validator
 
 INTERMEDIATE_STEPS_KEY = "intermediate_steps"
