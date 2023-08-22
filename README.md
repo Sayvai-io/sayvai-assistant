@@ -12,3 +12,6 @@ $uvicorn main:app --reload
 ```
 
 thnx for reading
+
+
+To read more about the project, click [here](/docs/sayvai.md)
