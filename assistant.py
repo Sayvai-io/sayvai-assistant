@@ -18,8 +18,8 @@ from langchain.schema.messages import SystemMessage
 from langchain.tools import HumanInputRun as human
 
 # from tools.constants import agent_prompt
-from tools.database import DatabaseChain
-from tools.vectorstore import vectordb
+from database import DatabaseChain
+from vectorstore import vectordb
 
 with open("openai_api_key.txt", "r") as f:
     api_key = f.read()
@@ -38,6 +38,8 @@ class Assistant:
         self.agent = None
         self.tools = None
         self.calendly = None
+        self.agent_executor = None
+        self.prompt = None
         self.memory = ConversationSummaryMemory(llm=llm, memory_key='history')
         
     def intialize_tools(self):
@@ -60,31 +62,33 @@ class Assistant:
                     description="useful when you need something about sayvai"
                 ),
             ]
+            print("Tools initialized succesfully")
         else :
             print("Tools already initialized")
              
     def initialize_agent(self, verbose: bool = False) -> None:
         """Initialize the agent"""
+        self.prompt = OpenAIFunctionsAgent.create_prompt(system_message=SystemMessage(content="You are assistant that works for sayvai.Interacrt with user untill he opt to exit"))
         self.agent = OpenAIFunctionsAgent(
             llm=llm,
             tools=self.tools,
-            prompt=SystemMessage(content="You are assistant that works for sayvai.Interacrt with user untill he opt to exit")
-        )
+            prompt=self.prompt
+            )
         agent_executor =AgentExecutor(
             agent=self.agent,
             tools=self.tools,
             verbose=verbose,
             memory=self.memory
         )
+        print('Agent initialized')
         return agent_executor
             
     def initialize(self) -> None:
         """Initialize the assistant"""
         self.intialize_tools()
-        self.initialize_agent(verbose=True)
+        self.agent_executor=self.initialize_agent(verbose=True)
         return None
     
     def get_answer(self, question: str) -> str:
         """Get the answer from the agent"""
-        agent_executor = self.initialize_agent()
-        return agent_executor.run(question)
+        return self.agent_executor.run(question)

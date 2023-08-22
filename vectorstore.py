@@ -7,10 +7,10 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.llms import OpenAI
 from langchain.vectorstores import Pinecone
 
-with open("openai_api_key.txt", "r") as f:
+with open("D:\kedar\SayvAI\sayvai-assistant\openai_api_key.txt", "r") as f:
     api_key = f.read()
     
-with open("pinecone_api.txt", "r") as f:
+with open("D:\kedar\SayvAI\sayvai-assistant\pinecone_api.txt", "r") as f:
     pinecone_api_key = f.read()
     
     

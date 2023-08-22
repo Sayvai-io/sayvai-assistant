@@ -1,7 +1,7 @@
 import os
 
-from tools.dbbase import SQLDatabase
-from tools.dbchain import SQLDatabaseChain
+from dbbase import SQLDatabase
+from dbchain import SQLDatabaseChain
 from langchain.chat_models import ChatOpenAI
 
 with open("D:\kedar\SayvAI\sayvai-assistant\openai_api_key.txt", "r") as f:
