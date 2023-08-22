@@ -12,16 +12,16 @@
 import os
 import pinecone
 from dbbase import SQLDatabase
+from constants import prompt
 from vectorstore import vectordb
 from dbchain import SQLDatabaseChain 
 from langchain.llms import OpenAI 
 from langchain.chat_models import ChatOpenAI
 from langchain.tools import HumanInputRun as human
 from langchain.agents import AgentType, Tool, AgentExecutor , initialize_agent , OpenAIFunctionsAgent
-from langchain.schema.messages import SystemMessage
 from sqlalchemy import create_engine
-from langchain.prompts.prompt import PromptTemplate
-
+# import summarization memory
+from langchain.memory import ConversationSummaryBufferMemory
 
 
 with open("openai_api_key.txt", "r") as f:
@@ -40,12 +40,12 @@ class Assistant:
     It is the main interface for the user to interact with the agent."""
     def __init__(self):
         self.agent = None
-        self.memory = None
+        self.memory = ConversationSummaryBufferMemory(llm=llm)
         self.tools = None
         self.human = None
         self.sql = None
         self.calendly = None
-        self.system_message = SystemMessage(content="You are assistant that works for sayvai.Interacrt with user untill he opt to exit")
+        self.system_message = prompt
         self.prompt = OpenAIFunctionsAgent.create_prompt(
             system_message=self.system_message,
         )
@@ -108,6 +108,7 @@ class Assistant:
             agent=self.agent,
             tools=self.tools,
             verbose=verbose,
+            memory=self.memory,
         )
         return agent_executor
         
