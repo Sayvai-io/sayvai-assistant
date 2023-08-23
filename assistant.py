@@ -18,8 +18,8 @@ from langchain.schema.messages import SystemMessage
 from langchain.tools import HumanInputRun as human
 
 # from tools.constants import agent_prompt
-from database import DatabaseChain
-from vectorstore import vectordb
+from tools.database import DatabaseChain
+from tools.vectorstore import vectordb
 
 with open("openai_api_key.txt", "r") as f:
     api_key = f.read()
@@ -67,7 +67,7 @@ class Assistant:
              
     def initialize_agent(self, verbose: bool = False) -> None:
         """Initialize the agent"""
-        self.prompt = OpenAIFunctionsAgent.create_prompt(system_message=SystemMessage(content="You are assistant that works for sayvai.Interacrt with user untill he opt to exit"))
+        self.prompt = OpenAIFunctionsAgent.create_prompt(system_message=SystemMessage(content="You are assistant that works for sayvai.Interacrt with user untill he opt to exit. Use human tool to interact with the user"))
         self.agent = OpenAIFunctionsAgent(
             llm=llm,
             tools=self.tools,
