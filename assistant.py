@@ -78,7 +78,7 @@ class Assistant:
                 Tool(
                     name="sql",
                     func=self.sql_chain,
-                    description="useful to interact with database with CRUD operations (takes natural language input)."
+                    description="useful to display values from database (takes natural language input)."
                 ),
                 Tool(
                     name="pinecone",
