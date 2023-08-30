@@ -114,12 +114,12 @@ class Assistant:
         
         
      
-    def initialize(self) -> None:
+    def initialize(self, verbose: bool=False) -> None:
         """Initialize the assistant"""
         # self.initialize_vectordb()
         self.initialize_human()
         self.intialize_tools()
-        self.agent_executor = self.initialize_agent(verbose=True)
+        self.agent_executor = self.initialize_agent(verbose=verbose)
         return None
     
     def get_answer(self, question: str) -> str:
