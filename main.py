@@ -1,6 +1,7 @@
 # Fastapi
 from fastapi import FastAPI
 from assistant import Assistant
+from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -34,13 +35,17 @@ assistant = Assistant()
 # print(assistant.initialize_vectordb())
 assistant.initialize()
 
+class Item(BaseModel):
+    query : str
+
+
 @app.get("/")
 def read_root():
     return {"Hello": "Welcome to Sayvai-Assistant"}
 
 @app.post("/get_answer")
-def get_answer(query: str):
-    return {"answer": assistant.get_answer(query)}
+def get_answer(item: Item):
+    return {"answer": assistant.get_answer(item.query)}
 
 
 
