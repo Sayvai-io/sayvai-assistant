@@ -4,7 +4,7 @@ from dbbase import SQLDatabase
 from dbchain import SQLDatabaseChain
 from langchain.chat_models import ChatOpenAI
 
-with open("D:\kedar\SayvAI\sayvai-assistant\openai_api_key.txt", "r") as f:
+with open("openai_api_key.txt", "r") as f:
     api_key = f.read()
 
 os.environ["OPENAI_API_KEY"] = api_key
