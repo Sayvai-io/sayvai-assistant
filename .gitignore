@@ -1,7 +1,12 @@
 __pycache__
-__pycache__/*
+.venv
 openai_api_key.txt
 pinecone_api.txt
 test.py
 sayvai.db
 sayvai.db
+pyproject.toml
+tools/__pycache__
+credentials.json
+keys.txt
+token.json
