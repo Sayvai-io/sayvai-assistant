@@ -91,7 +91,7 @@ class Assistant:
             
 
             
-    def initialize_agent(self, verbose: bool = False) -> None:
+    def agent_inittialize(self, verbose: bool = False) -> None:
         """Initialize the agent"""
         # self.agent = initialize_agent(
         #     agent_type=AgentType.OPENAI_FUNCTIONS,
@@ -119,7 +119,7 @@ class Assistant:
         # self.initialize_vectordb()
         self.initialize_human()
         self.intialize_tools()
-        self.agent_executor = self.initialize_agent(verbose=verbose)
+        self.agent_executor = self.agent_inittialize(verbose=verbose)
         return None
     
     def get_answer(self, question: str) -> str:
