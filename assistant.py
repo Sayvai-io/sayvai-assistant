@@ -11,10 +11,10 @@
 """
 import os
 import pinecone
-from dbbase import SQLDatabase
+from tools.dbbase import SQLDatabase
 from constants import prompt
-from vectorstore import vectordb
-from dbchain import SQLDatabaseChain 
+from tools.vectorstore import vectordb
+from tools.dbchain import SQLDatabaseChain 
 from langchain.llms import OpenAI 
 from langchain.chat_models import ChatOpenAI
 from langchain.tools import HumanInputRun as human
