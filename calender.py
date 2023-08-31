@@ -19,6 +19,8 @@ class GCalender:
         self.calendar_id = "primary"
         if os.path.exists('token.json'):
             self.creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+        else:
+            self.get_credentials()
         # if self.creds and self.creds.expired and self.creds.refresh_token:
         #     self.creds.refresh(Request())
            
