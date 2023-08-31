@@ -3,8 +3,8 @@ import os
 from sqlalchemy import create_engine
 from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
-from dbbase import SQLDatabase
-from dbchain import SQLDatabaseChain
+from tools.dbbase import SQLDatabase
+from tools.dbchain import SQLDatabaseChain
 
 with open("openai_api_key.txt", "r") as f:
     api_key = f.read()
