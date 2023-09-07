@@ -11,11 +11,12 @@ def parse_input(input_str):
     except ValueError:
         return None
 
-def event(date):
+def event(date: str):
     # Parse the start and end times using the parse_input function
     input_pairs = date.split('/')
     start_time = parse_input(input_pairs[0])
     end_time = parse_input(input_pairs[1])
+    mail = input_pairs[2]
 
     if start_time and end_time:
         events = {
@@ -34,12 +35,10 @@ def event(date):
                 'RRULE:FREQ=DAILY;COUNT=1'
             ],
             'attendees': [
-                {'email': 'athikabilanvenkatesan@sayvai.io'},
-                {'email': 'kedareeshwarsekar@sayvai.io'}
+                {'email': 'sanjaypranav@sayvai.io'},
+                {'email': mail}
             ]
         }
         return cal.create_event(events)
     else:
         return None
-
-print(event('2023,10,20,13,30', '2023,10,20,14,00'))

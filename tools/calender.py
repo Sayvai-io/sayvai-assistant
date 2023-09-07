@@ -9,6 +9,7 @@ from googleapiclient.errors import HttpError
 from constants import SCOPES
 
 SCOPES = SCOPES
+print(SCOPES)
 
 class GCalender:
     

@@ -47,7 +47,9 @@ class Assistant:
         self.memory = ConversationSummaryBufferMemory(llm=llm)
         self.tools = None
         self.agent_executor = None
-        self.prompt = None
+        self.prompt = OpenAIFunctionsAgent.create_prompt(
+            system_message=prompt,
+        )
         
     def intialize_tools(self):
         """Initialize the tools"""
@@ -55,12 +57,12 @@ class Assistant:
             self.tools = [
                 Tool(
                     name="human",
-                    func=human,
+                    func=human().run,
                     description="The human tool is used to interact with the user."
                 ),
                 Tool(
                     name="sql",
-                    func=self.sql_chain,
+                    func=DatabaseChain,
                     description="useful to display values from database (takes natural language input)."
                 ),
                 Tool(
@@ -71,7 +73,7 @@ class Assistant:
                 Tool(
                     name="calendar",
                     func=event,
-                    description="useful when you need to schedule an event. Input should be start and end time(Example input:2023,10,20,13,30/ 2023,10,20,14,00)."
+                    description="useful when you need to schedule an event. Input should be start and end time(Example input:2023,10,20,13,30/ 2023,10,20,14,00/ mail_id)."
                 )
             ]
         else :
@@ -105,7 +107,6 @@ class Assistant:
     def initialize(self, verbose: bool=False) -> None:
         """Initialize the assistant"""
         # self.initialize_vectordb()
-        self.initialize_human()
         self.intialize_tools()
         self.agent_executor = self.agent_inittialize(verbose=verbose)
         return None
