@@ -1,3 +1,18 @@
+chardet==5.2.0
+click==8.1.7
+dnspython==2.4.2
+emoji==2.8.0
+filetype==1.2.0
+joblib==1.3.2
+langchain-experimental==0.0.10
+loguru==0.7.0
+lxml==4.9.3
+nltk==3.8.1
+pinecone-client==2.2.2
+python-magic==0.4.27
+tabulate==0.9.0
+unstructured==0.10.4
+pysqlite3==0.5.1
 langchain
 langchain-experimental
 openai
@@ -12,3 +27,4 @@ google_auth_oauthlib==1.0.0
 gspread==5.10.0
 llama_index==0.8.1.post1
 oauth2client==4.1.3
+
