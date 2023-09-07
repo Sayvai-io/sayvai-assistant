@@ -20,6 +20,7 @@ from langchain.tools import HumanInputRun as human
 # from tools.constants import agent_prompt
 from tools.database import DatabaseChain
 from tools.vectorstore import vectordb
+from tools.cal_event import event
 
 with open("openai_api_key.txt", "r") as f:
     api_key = f.read()
@@ -37,7 +38,6 @@ class Assistant:
     def __init__(self):
         self.agent = None
         self.tools = None
-        self.calendly = None
         self.agent_executor = None
         self.prompt = None
         self.memory = ConversationSummaryMemory(llm=llm, memory_key='history')
@@ -61,6 +61,11 @@ class Assistant:
                     func=vectordb,
                     description="useful when you need something about sayvai"
                 ),
+                Tool(
+                    name="calendar",
+                    func=event,
+                    description="useful when you need to schedule an event. Input should be start and end time(Example input:2023,10,20,13,30/ 2023,10,20,14,00)."
+                )
             ]
         else :
             print("Tools already initialized")

@@ -1,4 +1,4 @@
-from calender import GCalender
+from tools.calender import GCalender
 import datetime
 
 cal = GCalender()
@@ -11,10 +11,11 @@ def parse_input(input_str):
     except ValueError:
         return None
 
-def event(start_str: str, end_str: str):
+def event(date):
     # Parse the start and end times using the parse_input function
-    start_time = parse_input(start_str)
-    end_time = parse_input(end_str)
+    input_pairs = date.split('/')
+    start_time = parse_input(input_pairs[0])
+    end_time = parse_input(input_pairs[1])
 
     if start_time and end_time:
         events = {
