@@ -27,7 +27,7 @@ class GCalender:
         
     def get_credentials(self):
         """Gets the credentials for the user"""
-        flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+        flow = InstalledAppFlow.from_client_secrets_file('/home/kedar/kedar/SayvAI/sayvai-assistant/tools/credentials.json', SCOPES)
         self.creds = flow.run_local_server(port=0)
         
         with open('token.json', 'w') as token:
