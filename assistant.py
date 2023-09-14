@@ -72,7 +72,8 @@ class Assistant:
                 Tool(
                     name="sql",
                     func=Database(llm=llm, engine=create_engine("sqlite:///sayvai.db"))._run,
-                    description="useful to interaact with database (takes natural language input). contains details of all the employees from sayvai(table name: users). you can retrive details like email/mobile/designation. (example input: email of user_name )"
+                    description="useful to interaact with database "
+                                "example input : kedar's email "
                 ),
                 Tool(
                     name="pinecone",
@@ -82,7 +83,8 @@ class Assistant:
                 Tool(
                     name="calendly",
                     func=Calendar()._run,
-                    description="useful when you need to schedule an event. Input should be start and end time(Example input:2023,10,20,13,30/ 2023,10,20,14,00/mail"
+                    description="useful when you need to schedule an event. Input should be start and end time("
+                                "Example input:2023,10,20,13,30/ 2023,10,20,14,00/mail"
                 ),
                 Tool(
                     name="datetime",
