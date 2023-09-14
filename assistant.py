@@ -10,18 +10,17 @@
  3.1) summarization
 """
 import os
-import pinecone
-from tools.dbbase import SQLDatabase
+from sayvai_tools.tools.sql_database import Database
+from sayvai_tools.tools.calendar import Calendar
 from constants import prompt
-from tools.vectorstore import vectordb
-from tools.dbchain import SQLDatabaseChain 
+from tools.vectorstore import vectordb 
 from langchain.llms import OpenAI 
 from langchain.chat_models import ChatOpenAI
 from langchain.tools import HumanInputRun as human
 from langchain.agents import AgentType, Tool, AgentExecutor , initialize_agent , OpenAIFunctionsAgent
 from sqlalchemy import create_engine
-# import summarization memory
 from langchain.memory import ConversationSummaryBufferMemory
+from tools.date import current_date
 
 
 with open("openai_api_key.txt", "r") as f:
@@ -57,14 +56,7 @@ class Assistant:
         return None
     
     
-    def sql_chain(self, query: str = None) -> str:
-        """Initialize the sql database chain"""
-        db = SQLDatabase.from_uri("sqlite:///sayvai.db")
-        sql_db_chain = SQLDatabaseChain.from_llm(
-        llm=llm,
-        db=db,
-        )
-        return sql_db_chain.run(query)
+
         
     def intialize_tools(self):
         """Initialize the tools"""
@@ -77,14 +69,24 @@ class Assistant:
                 ),
                 Tool(
                     name="sql",
-                    func=self.sql_chain,
-                    description="useful to display values from database (takes natural language input)."
+                    func=Database(llm=llm, engine=create_engine("sqlite:///sayvai.db"))._run,
+                    description="useful to interaact with database (takes natural language input). contains details of all the employees from sayvai(table name: users). you can retrive details like email/mobile/designation"
                 ),
                 Tool(
                     name="pinecone",
                     func=vectordb,
                     description="useful when you need something about sayvai"
                 ),
+                Tool(
+                    name="calendly",
+                    func=Calendar()._run,
+                    description="useful when you need to schedule an event. Input should be start and end time(Example input:2023,10,20,13,30/ 2023,10,20,14,00/mail"
+                ),
+                Tool(
+                    name="datetime",
+                    func=current_date,
+                    description="useful when you need to know the current date and time"
+                )
             ]
         else :
             print("Tools already initialized")
@@ -122,9 +124,13 @@ class Assistant:
         self.agent_executor = self.agent_inittialize(verbose=verbose)
         return None
     
-    def get_answer(self, question: str) -> str:
+    def get_answer(self) -> str:
         """Get the answer from the agent"""
-        return self.agent_executor.run(question)
+        return self.agent_executor.run("""
+                                       interact with the user until he opt to quit(use human tool).
+                                       To know the current date and time use datetime tool. Dont make up a time to schedule a meeting.
+                                       If  mail is not provided, then the event will be scheduled for the user by accessiing the sql database for mail.
+                                       """)
     
     
         
