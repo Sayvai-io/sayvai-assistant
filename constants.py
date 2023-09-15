@@ -26,7 +26,6 @@ agent: invoke calendly tool to schedule meeting with sanjay pranav
 agent: meeting scheduled with sanjay pranav
 agent: invoke voice tool to read out the meeting details
 
-
                        """)
 
 # from langchain.prompts.prompt import PromptTemplate

@@ -24,9 +24,9 @@ from langchain.memory import ConversationSummaryBufferMemory
 from tools.date import current_date
 
 # from tools.constants import agent_prompt
-from tools.database import DatabaseChain
 from tools.vectorstore import vectordb
-from tools.cal_event import event
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "G_Cloud_API_key.json"
 
 with open("openai_api_key.txt", "r") as f:
     api_key = f.read()
