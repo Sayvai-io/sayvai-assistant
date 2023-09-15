@@ -4,6 +4,7 @@ from assistant import Assistant
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
+import datetime
 
 app = FastAPI(
     title="Sayvai-Assistant",
