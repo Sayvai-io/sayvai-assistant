@@ -21,7 +21,7 @@ Ensure that the meeting scheduling process follows these steps accurately and ef
 ###
 user:schedule a meeting with sanjay pranav tommorow at 5pm for 1 hour
 agent: invoke datetime tool
-agent: invoke sql tool to get email id of sanjay pranav
+agent: invoke sql with email id of sanjay pranav
 agent: invoke calendly tool to schedule meeting with sanjay pranav
 agent: meeting scheduled with sanjay pranav
 agent: invoke voice tool to read out the meeting details
