@@ -14,14 +14,16 @@ from sayvai_tools.tools.sql_database import Database
 from sayvai_tools.tools.conversational_human import ConversationalHuman as human
 from sayvai_tools.tools.calendar import Calendar
 from constants import prompt
-from tools.vectorstore import vectordb 
-from langchain.llms import OpenAI 
+from sayvai_tools.tools.pinecone import VectorDB as vectordb
+from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
 # from langchain.tools import HumanInputRun as human
 from langchain.agents import AgentType, Tool, AgentExecutor , initialize_agent , OpenAIFunctionsAgent
 from sqlalchemy import create_engine
 from langchain.memory import ConversationSummaryBufferMemory
 from tools.date import current_date
+import pinecone
+from langchain.embeddings.openai import OpenAIEmbeddings
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r"G_Cloud_API_key.json"
 
@@ -34,9 +36,19 @@ os.environ["OPENAI_API_KEY"] = api_key
 with open("stt_tts_api_key.txt", "r") as f:
     eleven_labs_api_key = f.read()
     
-voice =  human(
+voice = human(
             api_key = eleven_labs_api_key
             )
+
+with open("pinecone_api.txt", "r") as f:
+    pinecone_api_key = f.read()
+
+pinecone.init(
+    api_key=pinecone_api_key,
+    environment="northamerica-northeast1-gcp"
+)
+
+cone = vectordb(embeddings=OpenAIEmbeddings(), index_name="index-1", namespace="Proposal-investors")
 
 
 llm = ChatOpenAI(
@@ -78,7 +90,7 @@ class Assistant:
                 ),
                 Tool(
                     name="pinecone",
-                    func=vectordb,
+                    func=cone._run,
                     description="useful when you need something about sayvai"
                 ),
                 Tool(
