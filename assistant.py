@@ -26,7 +26,7 @@ import pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
 
 g_cloud_json_key = r"G_Cloud_API_key.json"
-phrase_set_path= r"C:\Users\dines\Downloads\phrase_set.yaml"
+phrase_set_path= r"phrase_set.yaml"
 
 with open("openai_api_key.txt", "r") as f:
     api_key = f.read()
@@ -99,7 +99,7 @@ class Assistant:
                 Tool(
                     name="calendly",
                     func=Calendar()._run,
-                    description="useful when you need to schedule an event. Input should be start and end time("
+                    description="useful when you need to schedule an event. Input should be start and end time"
                                 "Example input:2023,10,20,13,30/ 2023,10,20,14,00/mail"
                 ),
                 Tool(
@@ -110,7 +110,7 @@ class Assistant:
                 Tool(
                     name="voice",
                     func=voice._run,
-                    description="useful when you need to know the current date and time"
+                    description="useful when you need to interact with user"
                 )
             ]
         else :
