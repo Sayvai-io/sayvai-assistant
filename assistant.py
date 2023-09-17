@@ -149,7 +149,7 @@ class Assistant:
     def get_answer(self) -> str:
         """Get the answer from the agent"""
         return self.agent_executor.run("""
-                                       interact with the user until he opt to quit(use voice tool).
+                                       keep interacting with the user using voice tool untill he opt to exit
                                        """)
     
     

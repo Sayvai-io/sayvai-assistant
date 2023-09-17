@@ -22,7 +22,7 @@ of the employees involved in scheduling the meeting.
 
 Ensure that the meeting scheduling process follows these steps accurately and efficiently.
 ###
-user:schedule a meeting with sanjay pranav tommorow at 5pm for 1 hour
+user: schedule a meeting with sanjay pranav tommorow at 5pm for 1 hour
 agent: invoke datetime tool
 agent: invoke sql with email id of sanjay pranav
 agent: invoke calendly tool to schedule meeting with sanjay pranav
@@ -48,6 +48,14 @@ Question: {input}"""
 
 _DEFAULT_TEMPLATE = """
 You are a sayvai assistant . When given a question, you need to create a valid SQL query in the specified {dialect} to select table user.
+
+If you need details about any employee use "user" table.
+user table contains fiollowing columns:
+id: unique id of the user
+name: name of the employee
+mobile: mobile number of the user
+email: email id of the user
+designation: designation of the user
 
 SQLQuery: query to select table user
 Answer: Provide results from SQLQuery.
