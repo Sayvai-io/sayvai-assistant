@@ -25,7 +25,8 @@ from tools.date import current_date
 import pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r"G_Cloud_API_key.json"
+g_cloud_json_key = r"G_Cloud_API_key.json"
+phrase_set_path= r"C:\Users\dines\Downloads\phrase_set.yaml"
 
 with open("openai_api_key.txt", "r") as f:
     api_key = f.read()
@@ -37,7 +38,9 @@ with open("stt_tts_api_key.txt", "r") as f:
     eleven_labs_api_key = f.read()
     
 voice = human(
-            api_key = eleven_labs_api_key
+            api_key = eleven_labs_api_key,
+            g_api_key = g_cloud_json_key,
+            phrase_set_path = phrase_set_path
             )
 
 with open("pinecone_api.txt", "r") as f:
@@ -149,7 +152,7 @@ class Assistant:
     def get_answer(self) -> str:
         """Get the answer from the agent"""
         return self.agent_executor.run("""
-                                       keep interacting with the user using voice tool untill he opt to exit
+                                       your goals is to interact with the user with voice tool and terminate the interaction when words like "quit" or "exit" are said .
                                        """)
     
     
