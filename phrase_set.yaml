@@ -1,0 +1,8 @@
+- phrases: ["Hello","Clients","Target","schedule","employee","Audience","Meeting","services","appointment","good","quit"]
+  boost: 15.0
+- phrases: ["sanjaypranav","co-founder"]
+  boost: 10.0
+- phrases: ["SayvAI"]
+  boost: 20.0
+
+
