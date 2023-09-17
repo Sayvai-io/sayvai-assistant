@@ -14,15 +14,19 @@ from sayvai_tools.tools.sql_database import Database
 from sayvai_tools.tools.conversational_human import ConversationalHuman as human
 from sayvai_tools.tools.calendar import Calendar
 from constants import prompt
-from tools.vectorstore import vectordb 
-from langchain.llms import OpenAI 
+from sayvai_tools.tools.pinecone import VectorDB as vectordb
+from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
 # from langchain.tools import HumanInputRun as human
 from langchain.agents import AgentType, Tool, AgentExecutor , initialize_agent , OpenAIFunctionsAgent
 from sqlalchemy import create_engine
 from langchain.memory import ConversationSummaryBufferMemory
 from tools.date import current_date
+import pinecone
+from langchain.embeddings.openai import OpenAIEmbeddings
 
+g_cloud_json_key = r"G_Cloud_API_key.json"
+phrase_set_path= r"C:\Users\dines\Downloads\phrase_set.yaml"
 
 with open("openai_api_key.txt", "r") as f:
     api_key = f.read()
@@ -33,9 +37,21 @@ os.environ["OPENAI_API_KEY"] = api_key
 with open("stt_tts_api_key.txt", "r") as f:
     eleven_labs_api_key = f.read()
     
-voice =  human(
-            api_key = eleven_labs_api_key
+voice = human(
+            api_key = eleven_labs_api_key,
+            g_api_key = g_cloud_json_key,
+            phrase_set_path = phrase_set_path
             )
+
+with open("pinecone_api.txt", "r") as f:
+    pinecone_api_key = f.read()
+
+pinecone.init(
+    api_key=pinecone_api_key,
+    environment="northamerica-northeast1-gcp"
+)
+
+cone = vectordb(embeddings=OpenAIEmbeddings(), index_name="index-1", namespace="Proposal-investors")
 
 
 llm = ChatOpenAI(
@@ -72,17 +88,19 @@ class Assistant:
                 Tool(
                     name="sql",
                     func=Database(llm=llm, engine=create_engine("sqlite:///sayvai.db"))._run,
-                    description="useful to interaact with database (takes natural language input). contains details of all the employees from sayvai(table name: users). you can retrive details like email/mobile/designation. (example input: email of user_name )"
+                    description="useful to interaact with database "
+                                "example input : kedar's email "
                 ),
                 Tool(
                     name="pinecone",
-                    func=vectordb,
+                    func=cone._run,
                     description="useful when you need something about sayvai"
                 ),
                 Tool(
                     name="calendly",
                     func=Calendar()._run,
-                    description="useful when you need to schedule an event. Input should be start and end time(Example input:2023,10,20,13,30/ 2023,10,20,14,00/mail"
+                    description="useful when you need to schedule an event. Input should be start and end time("
+                                "Example input:2023,10,20,13,30/ 2023,10,20,14,00/mail"
                 ),
                 Tool(
                     name="datetime",
@@ -134,7 +152,7 @@ class Assistant:
     def get_answer(self) -> str:
         """Get the answer from the agent"""
         return self.agent_executor.run("""
-                                       interact with the user until he opt to quit(use voice tool).
+                                       your goals is to interact with the user with voice tool and terminate the interaction when words like "quit" or "exit" are said .
                                        """)
     
     
