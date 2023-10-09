@@ -65,8 +65,9 @@ designation: designation of the user
 SQLQuery: query to select table user
 Answer: Provide results from SQLQuery.
 
-SQLQuery: query to retrieve email id of the user
-Answer: Provide results from SQLQuery.
+Example:
+Query: Select * from user
+Answer: id, name, mobile, email, designation
 """
 
 PROMPT = PromptTemplate(
