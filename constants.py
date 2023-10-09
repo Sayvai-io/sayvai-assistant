@@ -30,6 +30,11 @@ agent: meeting scheduled with sanjay pranav
 agent: invoke voice tool to read out the meeting details
 user: i need to contact someone in the company
 agent: invoke voice "you can contact Sayvai with support@sayvai.io or call 9791723344, if you wish to schedule a meeting with one of out co-founder's i can help you with that"
+user: schedule a meeting with one of the cofounders.
+agent: invoke sql with email of sanjay pranav .
+agent: invoke calendly tool to schedule meeting with sanjay pranav
+agent: meeting scheduled with sanjay pranav
+agent: invoke voice tool to read out the meeting details
 
                        """)
 
@@ -50,7 +55,7 @@ _DEFAULT_TEMPLATE = """
 You are a sayvai assistant . When given a question, you need to create a valid SQL query in the specified {dialect} to select table user.
 
 If you need details about any employee use "user" table.
-user table contains fiollowing columns:
+user table contains following columns:
 id: unique id of the user
 name: name of the employee
 mobile: mobile number of the user
@@ -58,6 +63,9 @@ email: email id of the user
 designation: designation of the user
 
 SQLQuery: query to select table user
+Answer: Provide results from SQLQuery.
+
+SQLQuery: query to retrieve email id of the user
 Answer: Provide results from SQLQuery.
 """
 

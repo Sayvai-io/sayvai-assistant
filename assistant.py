@@ -24,6 +24,7 @@ from langchain.memory import ConversationSummaryBufferMemory
 from tools.date import current_date
 import pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.utilities import SerpAPIWrapper
 
 g_cloud_json_key = r"G_Cloud_API_key.json"
 phrase_set_path= r"phrase_set.yaml"
@@ -53,6 +54,13 @@ pinecone.init(
 
 cone = vectordb(embeddings=OpenAIEmbeddings(), index_name="index-1", namespace="Proposal-investors")
 
+params = {
+    "engine": "bing",
+    "gl": "us",
+    "hl": "en",
+}
+
+search = SerpAPIWrapper(params=params)
 
 llm = ChatOpenAI(
     temperature=0.4,
@@ -89,7 +97,7 @@ class Assistant:
                     name="sql",
                     func=Database(llm=llm, engine=create_engine("sqlite:///sayvai.db"))._run,
                     description="useful to interaact with database "
-                                "example input : kedar's email "
+                                "example input : Dinesh's email "
                 ),
                 Tool(
                     name="pinecone",
@@ -106,6 +114,11 @@ class Assistant:
                     name="datetime",
                     func=current_date,
                     description="useful when you need to know the current date and time"
+                ),
+                Tool(
+                    name="serper",
+                    func=search.arun,
+                    description="useful when you need to search something about the dishes from the internet"
                 ),
                 Tool(
                     name="voice",
