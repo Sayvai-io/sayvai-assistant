@@ -38,9 +38,11 @@ voice =  human(
             )
 
 
-llm = ChatOpenAI(
-    temperature=0.4,
-)
+# llm = ChatOpenAI(
+#     temperature=0.4,
+# )
+
+
 
 class Assistant:
     """
@@ -131,11 +133,9 @@ class Assistant:
         self.agent_executor = self.agent_inittialize(verbose=verbose)
         return None
     
-    def get_answer(self) -> str:
+    def get_answer(self, query) -> str:
         """Get the answer from the agent"""
-        return self.agent_executor.run("""
-                                       interact with the user until he opt to quit(use voice tool).
-                                       """)
+        return self.agent_executor.run(query)
     
     
         
