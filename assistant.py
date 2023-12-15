@@ -13,7 +13,7 @@ import os
 from sayvai_tools.tools.sql_database import Database
 from sayvai_tools.tools.conversational_human import ConversationalHuman as human
 from sayvai_tools.tools.calendar import Calendar
-from constants import prompt
+from constants import prompt, SCOPES
 from tools.vectorstore import vectordb 
 from langchain.llms import OpenAI 
 from langchain.chat_models import ChatOpenAI
@@ -29,13 +29,15 @@ with open("openai_api_key.txt", "r") as f:
     
 
 os.environ["OPENAI_API_KEY"] = api_key
+os.environ["GOOGLE_CREDENTIALS_PATH"] = "credentials.json"
+os.environ["GTOKEN_PATH"] = "token.json"
 
-with open("stt_tts_api_key.txt", "r") as f:
-    eleven_labs_api_key = f.read()
+# with open("stt_tts_api_key.txt", "r") as f:
+#     eleven_labs_api_key = f.read()
     
-voice =  human(
-            api_key = eleven_labs_api_key
-            )
+# voice =  human(
+#             api_key = eleven_labs_api_key
+#             )
 
 
 llm = ChatOpenAI(
@@ -50,9 +52,9 @@ class Assistant:
         self.agent = None
         self.memory = ConversationSummaryBufferMemory(llm=llm)
         self.tools = None
-        self.human = None
+        # self.human = None
         self.sql = None
-        self.voice = None
+        # self.voice = None
         self.calendly = None
         self.system_message = prompt
         self.prompt = OpenAIFunctionsAgent.create_prompt(
@@ -60,10 +62,10 @@ class Assistant:
         )
     
     
-    def initialize_human(self) -> None:
-        """Initialize the human"""
-        self.human = human()
-        return None
+    # def initialize_human(self) -> None:
+    #     """Initialize the human"""
+    #     self.human = human()
+    #     return None
  
     def initialize_tools(self):
         """Initialize the tools"""
@@ -81,19 +83,19 @@ class Assistant:
                 ),
                 Tool(
                     name="calendly",
-                    func=Calendar()._run,
+                    func=Calendar(SCOPES, email="sanjaypranav@sayvai.io",summary="this is a test mail")._run,
                     description="useful when you need to schedule an event. Input should be start and end time(Example input:2023,10,20,13,30/ 2023,10,20,14,00/mail"
                 ),
                 Tool(
                     name="datetime",
                     func=current_date,
                     description="useful when you need to know the current date and time"
-                ),
-                Tool(
-                    name="voice",
-                    func=voice._run,
-                    description="useful when you need to know the current date and time"
                 )
+                # Tool(
+                #     name="voice",
+                #     func=voice._run,
+                #     description="useful when you need to know the current date and time"
+                # )
             ]
         else :
             print("Tools already initialized")
@@ -131,11 +133,9 @@ class Assistant:
         self.agent_executor = self.agent_inittialize(verbose=verbose)
         return None
     
-    def get_answer(self) -> str:
+    def get_answer(self,query:str) -> str:
         """Get the answer from the agent"""
-        return self.agent_executor.run("""
-                                       interact with the user until he opt to quit(use voice tool).
-                                       """)
+        return self.agent_executor.run(query)
     
     
         
